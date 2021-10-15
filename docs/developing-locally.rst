@@ -81,7 +81,7 @@ First things first.
 
 or if you're running asynchronously: ::
 
-    $ uvicorn config.asgi:application --host 0.0.0.0 --reload
+    $ uvicorn {{cookiecutter.project_slug}}.asgi:application --host 0.0.0.0 --reload
 
 .. _PostgreSQL: https://www.postgresql.org/download/
 .. _Redis: https://redis.io/download
@@ -145,10 +145,10 @@ when developing locally. If you have the appropriate setup on your local machine
 in ``config/settings/local.py``::
 
     CELERY_TASK_ALWAYS_EAGER = False
-    
+
 To run Celery locally, make sure redis-server is installed (instructions are available at https://redis.io/topics/quickstart), run the server in one terminal with `redis-server`, and then start celery in another terminal with the following command::
-    
-    celery -A config.celery_app worker --loglevel=info
+
+    celery -A {{cookiecutter.project_slug}}.celery_app worker --loglevel=info
 
 
 Sass Compilation & Live Reloading
