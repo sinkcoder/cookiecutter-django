@@ -176,12 +176,6 @@ Answer the prompts with your own desired options_. For example::
     use_docker [n]: n
     use_heroku [n]: y
     use_compressor [n]: y
-    Select postgresql_version:
-    1 - 13.2
-    2 - 12.6
-    3 - 11.11
-    4 - 10.16
-    Choose from 1, 2, 3, 4, 5 [1]: 1
     Select js_task_runner:
     1 - None
     2 - Gulp

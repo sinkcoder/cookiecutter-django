@@ -46,14 +46,6 @@ use_pycharm:
 use_docker:
     Indicates whether the project should be configured to use Docker_ and `Docker Compose`_.
 
-postgresql_version:
-    Select a PostgreSQL_ version to use. The choices are:
-
-    1. 13.2
-    2. 12.6
-    3. 11.11
-    4. 10.16
-
 js_task_runner:
     Select a JavaScript task runner. The choices are:
 
