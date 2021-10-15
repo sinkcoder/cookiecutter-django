@@ -143,7 +143,6 @@ All enhancements and patches to Cookiecutter Django will be documented in this f
 ### Changed
 - Convert trans to translate in templates ([#3277](https://github.com/pydanny/cookiecutter-django/pull/3277))
 ### Updated
-- Update hiredis to 2.0.0 ([#3110](https://github.com/pydanny/cookiecutter-django/pull/3110))
 - Update mypy to 0.910 ([#3237](https://github.com/pydanny/cookiecutter-django/pull/3237))
 - Update whitenoise to 5.3.0 ([#3273](https://github.com/pydanny/cookiecutter-django/pull/3273))
 - Update tox to 3.24.0 ([#3269](https://github.com/pydanny/cookiecutter-django/pull/3269))
