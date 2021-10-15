@@ -26,17 +26,6 @@
     "AWS",
     "GCP"
   ],
-  "mail_service": [
-    "Mailgun",
-    "Amazon SES",
-    "Mailjet",
-    "Mandrill",
-    "Postmark",
-    "Sendgrid",
-    "SendinBlue",
-    "SparkPost",
-    "Other SMTP"
-  ],
   "use_async": "n",
   "use_drf": "y",
   "custom_bootstrap_compilation": "n",

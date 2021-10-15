@@ -61,19 +61,6 @@ cloud_provider:
 
     Note that if you choose no cloud provider, media files won't work.
 
-mail_service:
-    Select an email service that Django-Anymail provides
-
-    1. Mailgun_
-    2. `Amazon SES`_
-    3. Mailjet_
-    4. Mandrill_
-    5. Postmark_
-    6. SendGrid_
-    7. SendinBlue_
-    8. SparkPost_
-    9. `Other SMTP`_
-
 use_async:
     Indicates whether the project should use web sockets with Uvicorn + Gunicorn.
 
