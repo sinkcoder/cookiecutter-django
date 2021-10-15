@@ -23,8 +23,6 @@ if settings.DEBUG:
 {% if cookiecutter.use_drf == 'y' %}
 # API URLS
 urlpatterns += [
-    # API base url
-    path("api/", include("config.api_router")),
     # DRF auth token
     path("auth-token/", obtain_auth_token),
 ]
