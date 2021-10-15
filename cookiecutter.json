@@ -22,9 +22,9 @@
     "Gulp"
   ],
   "cloud_provider": [
+    "None",
     "AWS",
-    "GCP",
-    "None"
+    "GCP"
   ],
   "mail_service": [
     "Mailgun",
@@ -44,7 +44,7 @@
   "use_celery": "n",
   "use_mailhog": "n",
   "use_sentry": "n",
-  "use_whitenoise": "n",
+  "use_whitenoise": "y",
   "use_heroku": "n",
   "ci_tool": [
     "None",
