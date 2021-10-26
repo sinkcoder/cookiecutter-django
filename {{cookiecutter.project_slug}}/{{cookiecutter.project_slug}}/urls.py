@@ -9,6 +9,10 @@ from django.views import defaults as default_views
 from django.views.generic import TemplateView
 {%- if cookiecutter.use_drf == 'y' %}
 from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 {%- endif %}
 
 urlpatterns = [
@@ -24,7 +28,9 @@ if settings.DEBUG:
 # API URLS
 urlpatterns += [
     # DRF auth token
-    path("auth-token/", obtain_auth_token),
+    path('api/auth-token/', obtain_auth_token),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 {%- endif %}
 
@@ -33,23 +39,23 @@ if settings.DEBUG:
     # these url in browser to see how these error pages look like.
     urlpatterns += [
         path(
-            "400/",
+            '400/',
             default_views.bad_request,
-            kwargs={"exception": Exception("Bad Request!")},
+            kwargs={'exception': Exception('Bad Request!')},
         ),
         path(
-            "403/",
+            '403/',
             default_views.permission_denied,
-            kwargs={"exception": Exception("Permission Denied")},
+            kwargs={'exception': Exception('Permission Denied')},
         ),
         path(
-            "404/",
+            '404/',
             default_views.page_not_found,
-            kwargs={"exception": Exception("Page not Found")},
+            kwargs={'exception': Exception('Page not Found')},
         ),
-        path("500/", default_views.server_error),
+        path('500/', default_views.server_error),
     ]
-    if "debug_toolbar" in settings.INSTALLED_APPS:
+    if 'debug_toolbar' in settings.INSTALLED_APPS:
         import debug_toolbar
 
-        urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
+        urlpatterns = [path('__debug__/', include(debug_toolbar.urls))] + urlpatterns
