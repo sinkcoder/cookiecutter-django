@@ -77,7 +77,10 @@ THIRD_PARTY_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'django_filters',
-    'drf_yasg'
+    'drf_yasg',
+{%- endif %}
+{%- if cookiecutter.use_prometheus == "y" %}
+    'django_prometheus',
 {%- endif %}
 ]
 
@@ -128,6 +131,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
+{%- if cookiecutter.use_prometheus == "y" %}
+    'django_prometheus.middleware.PrometheusBeforeMiddleware',
+{%- endif %}
     'django.middleware.security.SecurityMiddleware',
 {%- if cookiecutter.use_drf == 'y' %}
     'corsheaders.middleware.CorsMiddleware',
@@ -143,6 +149,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+{%- if cookiecutter.use_prometheus == "y" %}
+    'django_prometheus.middleware.PrometheusAfterMiddleware',
+{%- endif %}
 ]
 
 # STATIC

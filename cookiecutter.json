@@ -28,6 +28,7 @@
   ],
   "use_async": "n",
   "use_drf": "y",
+  "use_prometheus": "y",
   "use_allauth": "n",
   "custom_bootstrap_compilation": "n",
   "use_compressor": "n",
