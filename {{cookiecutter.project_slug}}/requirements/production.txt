@@ -9,6 +9,7 @@ Collectfast==2.2.0  # https://github.com/antonagestam/collectfast
 {%- endif %}
 {%- if cookiecutter.use_sentry == "y" %}
 sentry-sdk==1.4.3  # https://github.com/getsentry/sentry-python
+django-anymail==8.4 # https://github.com/anymail/django-anymail
 {%- endif %}
 
 # Django
