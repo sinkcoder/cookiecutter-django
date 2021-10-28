@@ -30,10 +30,6 @@ services:
   mysql:
     image: jumpserver/mysql:5
     container_name: {{ cookiecutter.project_slug }}_local_mysql
-    environment:
-      DB_PORT: $MYSQL_PORT
-      MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
-      MYSQL_DATABASE: $MYSQL_DB
     volumes:
       - ./compose/local/mysql/my.cnf:/etc/mysql/my.cnf
       - local_mysql_data:/var/lib/mysql:Z
