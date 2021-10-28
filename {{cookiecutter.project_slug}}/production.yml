@@ -21,22 +21,12 @@ services:
   mysql:
     image: jumpserver/mysql:5
     container_name: {{ cookiecutter.project_slug }}_production_mysql
-    environment:
-      DB_PORT: $MYSQL_PORT
-      MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
-      MYSQL_DATABASE: $MYSQL_DB
     volumes:
       - ./compose/production/mysql/my.cnf:/etc/mysql/my.cnf
       - production_mysql_data:/var/lib/mysql:Z
     env_file:
       - ./.envs/.production/.mysql
     command: --character-set-server=utf8
-    healthcheck:
-      test: "mysql -h127.0.0.1 -P$$DB_PORT -uroot -p$$MYSQL_ROOT_PASSWORD -e 'SHOW DATABASES;'"
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
 
   traefik:
     build:
