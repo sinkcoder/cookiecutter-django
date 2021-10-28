@@ -5,7 +5,7 @@ volumes:
   production_traefik: {}
 
 services:
-  django:{% if cookiecutter.use_celery == 'y' %} &django{% endif %}
+  {{ cookiecutter.project_slug }}:{% if cookiecutter.use_celery == 'y' %} &{{ cookiecutter.project_slug }}{% endif %}
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
@@ -44,7 +44,7 @@ services:
       dockerfile: ./compose/production/traefik/Dockerfile
     image: {{ cookiecutter.project_slug }}_production_traefik
     depends_on:
-      - django
+      - {{ cookiecutter.project_slug }}
     volumes:
       - production_traefik:/etc/traefik/acme:z
     ports:
@@ -60,17 +60,17 @@ services:
   {%- if cookiecutter.use_celery == 'y' %}
 
   celeryworker:
-    <<: *django
+    <<: *{{ cookiecutter.project_slug }}
     image: {{ cookiecutter.project_slug }}_production_celeryworker
     command: /start-celeryworker
 
   celerybeat:
-    <<: *django
+    <<: *{{ cookiecutter.project_slug }}
     image: {{ cookiecutter.project_slug }}_production_celerybeat
     command: /start-celerybeat
 
   flower:
-    <<: *django
+    <<: *{{ cookiecutter.project_slug }}
     image: {{ cookiecutter.project_slug }}_production_flower
     command: /start-flower
   {%- endif %}

@@ -4,12 +4,12 @@ volumes:
   local_mysql_data: {}
 
 services:
-  django:{% if cookiecutter.use_celery == 'y' %} &django{% endif %}
+  {{ cookiecutter.project_slug }}:{% if cookiecutter.use_celery == 'y' %} &{{ cookiecutter.project_slug }}{% endif %}
     build:
       context: .
       dockerfile: ./compose/local/django/Dockerfile
     image: {{ cookiecutter.project_slug }}_local_django
-    container_name: django
+    container_name: {{ cookiecutter.project_slug }}
     depends_on:
       - mysql
       {%- if cookiecutter.use_mailhog == 'y' %}
@@ -74,7 +74,7 @@ services:
     container_name: {{ cookiecutter.project_slug }}_local_redis
 
   celeryworker:
-    <<: *django
+    <<: *{{ cookiecutter.project_slug }}
     image: {{ cookiecutter.project_slug }}_local_celeryworker
     container_name: celeryworker
     depends_on:
@@ -87,7 +87,7 @@ services:
     command: /start-celeryworker
 
   celerybeat:
-    <<: *django
+    <<: *{{ cookiecutter.project_slug }}
     image: {{ cookiecutter.project_slug }}_local_celerybeat
     container_name: celerybeat
     depends_on:
@@ -100,7 +100,7 @@ services:
     command: /start-celerybeat
 
   flower:
-    <<: *django
+    <<: *{{ cookiecutter.project_slug }}
     image: {{ cookiecutter.project_slug }}_local_flower
     container_name: flower
     ports:
@@ -117,7 +117,7 @@ services:
     image: {{ cookiecutter.project_slug }}_local_node
     container_name: node
     depends_on:
-      - django
+      - {{ cookiecutter.project_slug }}
     volumes:
       - .:/app:z
       # http://jdlm.info/articles/2016/03/06/lessons-building-node-app-docker.html
