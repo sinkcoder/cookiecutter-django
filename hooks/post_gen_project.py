@@ -213,6 +213,18 @@ def set_mysql_user(file_path, value):
     return mysql_user
 
 
+def set_mysql_root_password(file_path, value=None):
+    mysql_password = set_flag(
+        file_path,
+        "!!!SET MYSQL_ROOT_PASSWORD!!!",
+        value=value,
+        length=64,
+        using_digits=True,
+        using_ascii_letters=True,
+    )
+    return mysql_password
+
+
 def set_mysql_password(file_path, value=None):
     mysql_password = set_flag(
         file_path,
@@ -263,8 +275,14 @@ def set_flags_in_envs(mysql_user, celery_flower_user, debug=False):
     set_mysql_password(
         local_mysql_envs_path, value=DEBUG_VALUE if debug else None
     )
+    set_mysql_root_password(
+        local_mysql_envs_path, value=DEBUG_VALUE if debug else None
+    )
     set_mysql_user(production_mysql_envs_path, value=mysql_user)
     set_mysql_password(
+        production_mysql_envs_path, value=DEBUG_VALUE if debug else None
+    )
+    set_mysql_root_password(
         production_mysql_envs_path, value=DEBUG_VALUE if debug else None
     )
 
