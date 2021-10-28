@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.6-slim-buster
+ARG PYTHON_VERSION=3.6-slim-stretch
 
 {% if cookiecutter.js_task_runner == 'Gulp' -%}
 FROM node:10-stretch-slim as client-builder
@@ -21,20 +21,29 @@ FROM python as python-build-stage
 
 ARG BUILD_ENVIRONMENT=production
 
+RUN echo 'deb http://mirrors.aliyun.com/debian/ stretch main non-free contrib \n\
+deb http://mirrors.aliyun.com/debian-security stretch/updates main' > /etc/apt/sources.list
+
 # Install apt packages
 RUN apt-get update && apt-get install --no-install-recommends -y \
   # dependencies for building Python packages
   build-essential \
-  # psycopg2 dependencies
-  libpq-dev
+  vim \
+  less \
+  gcc \
+  libmariadbclient-dev \
+  python3-dev \
+  procps \
+  net-tools
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements .
 
 # Create Python Dependency and Sub-Dependency Wheels.
 RUN pip wheel --wheel-dir /usr/src/app/wheels  \
-  -r ${BUILD_ENVIRONMENT}.txt
-
+  -r ${BUILD_ENVIRONMENT}.txt \
+  -i https://mirrors.aliyun.com/pypi/simple \
+  --no-cache-dir
 
 # Python 'run' stage
 FROM python as python-run-stage
@@ -54,8 +63,6 @@ RUN addgroup --system django \
 
 # Install required system dependencies
 RUN apt-get update && apt-get install --no-install-recommends -y \
-  # psycopg2 dependencies
-  libpq-dev \
   # Translations dependencies
   gettext \
   # cleaning up unused files

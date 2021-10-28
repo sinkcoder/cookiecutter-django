@@ -1,13 +1,14 @@
-FROM python:3.6-slim-buster
+FROM python:3.6-slim-stretch
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
+RUN echo 'deb http://mirrors.aliyun.com/debian/ stretch main non-free contrib \n\
+deb http://mirrors.aliyun.com/debian-security stretch/updates main' > /etc/apt/sources.list
+
 RUN apt-get update \
     # dependencies for building Python packages
     && apt-get install -y build-essential \
-    # psycopg2 dependencies
-    && apt-get install -y libpq-dev \
     # Translations dependencies
     && apt-get install -y gettext \
     # Uncomment below lines to enable Sphinx output to latex and pdf
