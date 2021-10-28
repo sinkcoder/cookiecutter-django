@@ -32,9 +32,9 @@
   "use_allauth": "n",
   "custom_bootstrap_compilation": "n",
   "use_compressor": "n",
-  "use_celery": "n",
+  "use_celery": "y",
   "use_mailhog": "n",
-  "use_sentry": "n",
+  "use_sentry": "y",
   "use_whitenoise": "y",
   "use_heroku": "n",
   "ci_tool": [
