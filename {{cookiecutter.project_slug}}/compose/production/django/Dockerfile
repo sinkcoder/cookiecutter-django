@@ -28,13 +28,8 @@ deb http://mirrors.aliyun.com/debian-security stretch/updates main' > /etc/apt/s
 RUN apt-get update && apt-get install --no-install-recommends -y \
   # dependencies for building Python packages
   build-essential \
-  vim \
-  less \
   gcc \
-  libmariadbclient-dev \
-  python3-dev \
-  procps \
-  net-tools
+  libmariadbclient-dev
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements .
@@ -57,12 +52,24 @@ ENV BUILD_ENV ${BUILD_ENVIRONMENT}
 
 WORKDIR ${APP_HOME}
 
+RUN echo 'deb http://mirrors.aliyun.com/debian/ stretch main non-free contrib \n\
+deb http://mirrors.aliyun.com/debian-security stretch/updates main' > /etc/apt/sources.list
+
 RUN addgroup --system django \
     && adduser --system --ingroup django django
 
 
 # Install required system dependencies
 RUN apt-get update && apt-get install --no-install-recommends -y \
+  # dependencies for building Python packages
+  build-essential \
+  vim \
+  less \
+  gcc \
+  libmariadbclient-dev \
+  python3-dev \
+  procps \
+  net-tools \
   # Translations dependencies
   gettext \
   # cleaning up unused files
