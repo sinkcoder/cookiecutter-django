@@ -1,8 +1,7 @@
 version: '3'
 
 volumes:
-  production_postgres_data: {}
-  production_postgres_data_backups: {}
+  production_mysql_data: {}
   production_traefik: {}
 
 services:
@@ -12,23 +11,32 @@ services:
       dockerfile: ./compose/production/django/Dockerfile
     image: {{ cookiecutter.project_slug }}_production_django
     depends_on:
-      - postgres
+      - mysql
       - redis
     env_file:
       - ./.envs/.production/.django
-      - ./.envs/.production/.postgres
+      - ./.envs/.production/.mysql
     command: /start
 
-  postgres:
-    build:
-      context: .
-      dockerfile: ./compose/production/postgres/Dockerfile
-    image: {{ cookiecutter.project_slug }}_production_postgres
+  mysql:
+    image: jumpserver/mysql:5
+    container_name: {{ cookiecutter.project_slug }}_production_mysql
+    environment:
+      DB_PORT: $MYSQL_PORT
+      MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DB
     volumes:
-      - production_postgres_data:/var/lib/postgresql/data:Z
-      - production_postgres_data_backups:/backups:z
+      - ./compose/production/mysql/my.cnf:/etc/mysql/my.cnf
+      - production_mysql_data:/var/lib/mysql:Z
     env_file:
-      - ./.envs/.production/.postgres
+      - ./.envs/.production/.mysql
+    command: --character-set-server=utf8
+    healthcheck:
+      test: "mysql -h127.0.0.1 -P$$DB_PORT -uroot -p$$MYSQL_ROOT_PASSWORD -e 'SHOW DATABASES;'"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   traefik:
     build:
@@ -73,6 +81,4 @@ services:
       dockerfile: ./compose/production/aws/Dockerfile
     env_file:
       - ./.envs/.production/.django
-    volumes:
-      - production_postgres_data_backups:/backups:z
   {%- endif %}

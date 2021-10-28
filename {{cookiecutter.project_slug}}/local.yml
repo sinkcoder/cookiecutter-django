@@ -1,8 +1,7 @@
 version: '3'
 
 volumes:
-  local_postgres_data: {}
-  local_postgres_data_backups: {}
+  local_mysql_data: {}
 
 services:
   django:{% if cookiecutter.use_celery == 'y' %} &django{% endif %}
@@ -12,7 +11,7 @@ services:
     image: {{ cookiecutter.project_slug }}_local_django
     container_name: django
     depends_on:
-      - postgres
+      - mysql
       {%- if cookiecutter.use_mailhog == 'y' %}
       - mailhog
       {%- endif %}
@@ -20,22 +19,33 @@ services:
       - .:/app:z
     env_file:
       - ./.envs/.local/.django
-      - ./.envs/.local/.postgres
+      - ./.envs/.local/.mysql
     ports:
       - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
     command: /start
 
-  postgres:
-    build:
-      context: .
-      dockerfile: ./compose/production/postgres/Dockerfile
-    image: {{ cookiecutter.project_slug }}_production_postgres
-    container_name: postgres
+  mysql:
+    image: jumpserver/mysql:5
+    container_name: mysql
+    environment:
+      DB_PORT: $MYSQL_PORT
+      MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
+      MYSQL_DATABASE: $MYSQL_DB
     volumes:
-      - local_postgres_data:/var/lib/postgresql/data:Z
-      - local_postgres_data_backups:/backups:z
+      - ./compose/local/mysql/my.cnf:/etc/mysql/my.cnf
+      - local_mysql_data:/var/lib/mysql:Z
     env_file:
-      - ./.envs/.local/.postgres
+      - ./.envs/.local/.mysql
+    command: --character-set-server=utf8
+    healthcheck:
+      test: "mysql -h127.0.0.1 -P$$DB_PORT -uroot -p$$MYSQL_ROOT_PASSWORD -e 'SHOW DATABASES;'"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   docs:
     image: {{ cookiecutter.project_slug }}_local_docs
@@ -73,7 +83,7 @@ services:
     container_name: celeryworker
     depends_on:
       - redis
-      - postgres
+      - mysql
       {%- if cookiecutter.use_mailhog == 'y' %}
       - mailhog
       {%- endif %}
@@ -86,7 +96,7 @@ services:
     container_name: celerybeat
     depends_on:
       - redis
-      - postgres
+      - mysql
       {%- if cookiecutter.use_mailhog == 'y' %}
       - mailhog
       {%- endif %}
