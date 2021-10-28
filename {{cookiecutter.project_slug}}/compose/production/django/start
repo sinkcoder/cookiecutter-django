@@ -6,6 +6,7 @@ set -o nounset
 
 
 python /app/manage.py collectstatic --noinput
+python /app/manage.py migrate
 {% if cookiecutter.use_whitenoise == 'y' and cookiecutter.use_compressor == 'y' %}
 compress_enabled() {
 python << END
@@ -28,7 +29,7 @@ if compress_enabled; then
 fi
 {%- endif %}
 {% if cookiecutter.use_async == 'y' %}
-/usr/local/bin/gunicorn {{cookiecutter.project_slug}}.asgi --bind 0.0.0.0:5000 --chdir=/app -k uvicorn.workers.UvicornWorker
+/usr/local/bin/gunicorn {{cookiecutter.project_slug}}.asgi --bind 0.0.0.0:8000 --chdir=/app -k uvicorn.workers.UvicornWorker
 {% else %}
-/usr/local/bin/gunicorn {{cookiecutter.project_slug}}.wsgi --bind 0.0.0.0:5000 --chdir=/app
+/usr/local/bin/gunicorn {{cookiecutter.project_slug}}.wsgi --bind 0.0.0.0:8000 --chdir=/app
 {%- endif %}
