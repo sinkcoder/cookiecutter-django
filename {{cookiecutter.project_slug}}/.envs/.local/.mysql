@@ -1,7 +1,7 @@
 # MySQL
 # ------------------------------------------------------------------------------
-MYSQL_HOST=!!!SET MYSQL_HOST!!!
-MYSQL_PORT=!!!SET MYSQL_PORT!!!
+MYSQL_HOST={{ cookiecutter.project_slug }}_local_mysql
+MYSQL_PORT=3306
 MYSQL_DB={{ cookiecutter.project_slug }}
 MYSQL_USER=!!!SET MYSQL_USER!!!
 MYSQL_PASSWORD=!!!SET MYSQL_PASSWORD!!!
