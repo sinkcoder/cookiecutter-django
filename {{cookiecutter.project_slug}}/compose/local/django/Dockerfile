@@ -52,7 +52,7 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   libmariadbclient-dev \
   python3-dev \
   procps \
-  net-tools
+  net-tools \
   # Translations dependencies
   gettext \
   # cleaning up unused files
