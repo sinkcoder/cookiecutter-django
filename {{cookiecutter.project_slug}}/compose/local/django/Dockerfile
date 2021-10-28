@@ -44,6 +44,9 @@ ENV BUILD_ENV ${BUILD_ENVIRONMENT}
 
 WORKDIR ${APP_HOME}
 
+RUN echo 'deb http://mirrors.aliyun.com/debian/ stretch main non-free contrib \n\
+deb http://mirrors.aliyun.com/debian-security stretch/updates main' > /etc/apt/sources.list
+
 # Install required system dependencies
 RUN apt-get update && apt-get install --no-install-recommends -y \
   # Translations dependencies

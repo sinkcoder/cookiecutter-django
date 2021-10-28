@@ -8,7 +8,15 @@ deb http://mirrors.aliyun.com/debian-security stretch/updates main' > /etc/apt/s
 
 RUN apt-get update \
     # dependencies for building Python packages
-    && apt-get install -y build-essential \
+    && apt-get install --no-install-recommends -y \
+      build-essential \
+      vim \
+      less \
+      gcc \
+      libmariadbclient-dev \
+      python3-dev \
+      procps \
+      net-tools \
     # Translations dependencies
     && apt-get install -y gettext \
     # Uncomment below lines to enable Sphinx output to latex and pdf
@@ -23,7 +31,10 @@ RUN apt-get update \
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements /requirements
 # All imports needed for autodoc.
-RUN pip install -r /requirements/local.txt -r /requirements/production.txt
+RUN pip install -r /requirements/local.txt \
+  -r /requirements/production.txt  \
+  -i https://mirrors.aliyun.com/pypi/simple \
+  --no-cache-dir
 
 COPY ./compose/local/docs/start /start-docs
 RUN sed -i 's/\r$//g' /start-docs
