@@ -6,7 +6,6 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 {%- endif %}
 from django.urls import include, path, re_path
 from django.views import defaults as default_views
-from django.views.generic import TemplateView
 {%- if cookiecutter.use_drf == 'y' %}
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
