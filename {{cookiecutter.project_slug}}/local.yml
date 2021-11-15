@@ -1,18 +1,17 @@
 version: '3'
 
 volumes:
-  local_postgres_data: {}
-  local_postgres_data_backups: {}
+  local_mysql_data: {}
 
 services:
-  django:{% if cookiecutter.use_celery == 'y' %} &django{% endif %}
+  {{ cookiecutter.project_slug }}:{% if cookiecutter.use_celery == 'y' %} &{{ cookiecutter.project_slug }}{% endif %}
     build:
       context: .
       dockerfile: ./compose/local/django/Dockerfile
     image: {{ cookiecutter.project_slug }}_local_django
-    container_name: django
+    container_name: {{ cookiecutter.project_slug }}
     depends_on:
-      - postgres
+      - mysql
       {%- if cookiecutter.use_mailhog == 'y' %}
       - mailhog
       {%- endif %}
@@ -20,22 +19,20 @@ services:
       - .:/app:z
     env_file:
       - ./.envs/.local/.django
-      - ./.envs/.local/.postgres
+      - ./.envs/.local/.mysql
     ports:
       - "8000:8000"
     command: /start
 
-  postgres:
-    build:
-      context: .
-      dockerfile: ./compose/production/postgres/Dockerfile
-    image: {{ cookiecutter.project_slug }}_production_postgres
-    container_name: postgres
+  mysql:
+    image: jumpserver/mysql:5
+    container_name: {{ cookiecutter.project_slug }}_local_mysql
     volumes:
-      - local_postgres_data:/var/lib/postgresql/data:Z
-      - local_postgres_data_backups:/backups:z
+      - ./compose/local/mysql/my.cnf:/etc/mysql/my.cnf
+      - local_mysql_data:/var/lib/mysql
     env_file:
-      - ./.envs/.local/.postgres
+      - ./.envs/.local/.mysql
+    command: --character-set-server=utf8
 
   docs:
     image: {{ cookiecutter.project_slug }}_local_docs
@@ -65,15 +62,15 @@ services:
 
   redis:
     image: redis:6
-    container_name: redis
+    container_name: {{ cookiecutter.project_slug }}_local_redis
 
   celeryworker:
-    <<: *django
+    <<: *{{ cookiecutter.project_slug }}
     image: {{ cookiecutter.project_slug }}_local_celeryworker
     container_name: celeryworker
     depends_on:
       - redis
-      - postgres
+      - mysql
       {%- if cookiecutter.use_mailhog == 'y' %}
       - mailhog
       {%- endif %}
@@ -81,12 +78,12 @@ services:
     command: /start-celeryworker
 
   celerybeat:
-    <<: *django
+    <<: *{{ cookiecutter.project_slug }}
     image: {{ cookiecutter.project_slug }}_local_celerybeat
     container_name: celerybeat
     depends_on:
       - redis
-      - postgres
+      - mysql
       {%- if cookiecutter.use_mailhog == 'y' %}
       - mailhog
       {%- endif %}
@@ -94,7 +91,7 @@ services:
     command: /start-celerybeat
 
   flower:
-    <<: *django
+    <<: *{{ cookiecutter.project_slug }}
     image: {{ cookiecutter.project_slug }}_local_flower
     container_name: flower
     ports:
@@ -111,7 +108,7 @@ services:
     image: {{ cookiecutter.project_slug }}_local_node
     container_name: node
     depends_on:
-      - django
+      - {{ cookiecutter.project_slug }}
     volumes:
       - .:/app:z
       # http://jdlm.info/articles/2016/03/06/lessons-building-node-app-docker.html

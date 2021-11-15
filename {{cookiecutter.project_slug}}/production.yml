@@ -1,34 +1,32 @@
 version: '3'
 
 volumes:
-  production_postgres_data: {}
-  production_postgres_data_backups: {}
+  production_mysql_data: {}
   production_traefik: {}
 
 services:
-  django:{% if cookiecutter.use_celery == 'y' %} &django{% endif %}
+  {{ cookiecutter.project_slug }}:{% if cookiecutter.use_celery == 'y' %} &{{ cookiecutter.project_slug }}{% endif %}
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
     image: {{ cookiecutter.project_slug }}_production_django
     depends_on:
-      - postgres
+      - mysql
       - redis
     env_file:
       - ./.envs/.production/.django
-      - ./.envs/.production/.postgres
+      - ./.envs/.production/.mysql
     command: /start
 
-  postgres:
-    build:
-      context: .
-      dockerfile: ./compose/production/postgres/Dockerfile
-    image: {{ cookiecutter.project_slug }}_production_postgres
+  mysql:
+    image: jumpserver/mysql:5
+    container_name: {{ cookiecutter.project_slug }}_production_mysql
     volumes:
-      - production_postgres_data:/var/lib/postgresql/data:Z
-      - production_postgres_data_backups:/backups:z
+      - ./compose/production/mysql/my.cnf:/etc/mysql/my.cnf
+      - production_mysql_data:/var/lib/mysql:Z
     env_file:
-      - ./.envs/.production/.postgres
+      - ./.envs/.production/.mysql
+    command: --character-set-server=utf8
 
   traefik:
     build:
@@ -36,7 +34,7 @@ services:
       dockerfile: ./compose/production/traefik/Dockerfile
     image: {{ cookiecutter.project_slug }}_production_traefik
     depends_on:
-      - django
+      - {{ cookiecutter.project_slug }}
     volumes:
       - production_traefik:/etc/traefik/acme:z
     ports:
@@ -48,20 +46,21 @@ services:
 
   redis:
     image: redis:6
+    container_name: {{ cookiecutter.project_slug }}_production_redis
   {%- if cookiecutter.use_celery == 'y' %}
 
   celeryworker:
-    <<: *django
+    <<: *{{ cookiecutter.project_slug }}
     image: {{ cookiecutter.project_slug }}_production_celeryworker
     command: /start-celeryworker
 
   celerybeat:
-    <<: *django
+    <<: *{{ cookiecutter.project_slug }}
     image: {{ cookiecutter.project_slug }}_production_celerybeat
     command: /start-celerybeat
 
   flower:
-    <<: *django
+    <<: *{{ cookiecutter.project_slug }}
     image: {{ cookiecutter.project_slug }}_production_flower
     command: /start-flower
   {%- endif %}
@@ -73,6 +72,4 @@ services:
       dockerfile: ./compose/production/aws/Dockerfile
     env_file:
       - ./.envs/.production/.django
-    volumes:
-      - production_postgres_data_backups:/backups:z
   {%- endif %}

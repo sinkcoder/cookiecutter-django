@@ -1,0 +1,11 @@
+# MySQL
+# ------------------------------------------------------------------------------
+MYSQL_HOST=mysql
+MYSQL_PORT=3306
+MYSQL_DB={{ cookiecutter.project_slug }}
+MYSQL_USER=!!!SET MYSQL_USER!!!
+MYSQL_PASSWORD=!!!SET MYSQL_PASSWORD!!!
+DB_PORT=3306
+MYSQL_ROOT_PASSWORD=!!!SET MYSQL_ROOT_PASSWORD!!!
+MYSQL_DATABASE={{ cookiecutter.project_slug }}
+DATABASE_URL="mysql://${MYSQL_HOST}:${MYSQL_PORT}/${MYSQL_DB}?user=${MYSQL_USER}&password=${MYSQL_PASSWORD}"

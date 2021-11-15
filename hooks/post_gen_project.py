@@ -97,10 +97,6 @@ def remove_packagejson_file():
 def remove_celery_files():
     file_names = [
         os.path.join("{{ cookiecutter.project_slug }}", "celery_app.py"),
-        os.path.join("{{ cookiecutter.project_slug }}", "users", "tasks.py"),
-        os.path.join(
-            "{{ cookiecutter.project_slug }}", "users", "tests", "test_tasks.py"
-        ),
     ]
     for file_name in file_names:
         os.remove(file_name)
@@ -208,25 +204,37 @@ def generate_random_user():
     return generate_random_string(length=32, using_ascii_letters=True)
 
 
-def generate_postgres_user(debug=False):
+def generate_mysql_user(debug=False):
     return DEBUG_VALUE if debug else generate_random_user()
 
 
-def set_postgres_user(file_path, value):
-    postgres_user = set_flag(file_path, "!!!SET POSTGRES_USER!!!", value=value)
-    return postgres_user
+def set_mysql_user(file_path, value):
+    mysql_user = set_flag(file_path, "!!!SET MYSQL_USER!!!", value=value)
+    return mysql_user
 
 
-def set_postgres_password(file_path, value=None):
-    postgres_password = set_flag(
+def set_mysql_root_password(file_path, value=None):
+    mysql_password = set_flag(
         file_path,
-        "!!!SET POSTGRES_PASSWORD!!!",
+        "!!!SET MYSQL_ROOT_PASSWORD!!!",
         value=value,
         length=64,
         using_digits=True,
         using_ascii_letters=True,
     )
-    return postgres_password
+    return mysql_password
+
+
+def set_mysql_password(file_path, value=None):
+    mysql_password = set_flag(
+        file_path,
+        "!!!SET MYSQL_PASSWORD!!!",
+        value=value,
+        length=64,
+        using_digits=True,
+        using_ascii_letters=True,
+    )
+    return mysql_password
 
 
 def set_celery_flower_user(file_path, value):
@@ -254,22 +262,28 @@ def append_to_gitignore_file(s):
         gitignore_file.write(os.linesep)
 
 
-def set_flags_in_envs(postgres_user, celery_flower_user, debug=False):
+def set_flags_in_envs(mysql_user, celery_flower_user, debug=False):
     local_django_envs_path = os.path.join(".envs", ".local", ".django")
     production_django_envs_path = os.path.join(".envs", ".production", ".django")
-    local_postgres_envs_path = os.path.join(".envs", ".local", ".postgres")
-    production_postgres_envs_path = os.path.join(".envs", ".production", ".postgres")
+    local_mysql_envs_path = os.path.join(".envs", ".local", ".mysql")
+    production_mysql_envs_path = os.path.join(".envs", ".production", ".mysql")
 
     set_django_secret_key(production_django_envs_path)
     set_django_admin_url(production_django_envs_path)
 
-    set_postgres_user(local_postgres_envs_path, value=postgres_user)
-    set_postgres_password(
-        local_postgres_envs_path, value=DEBUG_VALUE if debug else None
+    set_mysql_user(local_mysql_envs_path, value=mysql_user)
+    set_mysql_password(
+        local_mysql_envs_path, value=DEBUG_VALUE if debug else None
     )
-    set_postgres_user(production_postgres_envs_path, value=postgres_user)
-    set_postgres_password(
-        production_postgres_envs_path, value=DEBUG_VALUE if debug else None
+    set_mysql_root_password(
+        local_mysql_envs_path, value=DEBUG_VALUE if debug else None
+    )
+    set_mysql_user(production_mysql_envs_path, value=mysql_user)
+    set_mysql_password(
+        production_mysql_envs_path, value=DEBUG_VALUE if debug else None
+    )
+    set_mysql_root_password(
+        production_mysql_envs_path, value=DEBUG_VALUE if debug else None
     )
 
     set_celery_flower_user(local_django_envs_path, value=celery_flower_user)
