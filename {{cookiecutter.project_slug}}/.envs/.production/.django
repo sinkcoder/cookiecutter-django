@@ -52,7 +52,7 @@ CELERY_FLOWER_USER=!!!SET CELERY_FLOWER_USER!!!
 CELERY_FLOWER_PASSWORD=!!!SET CELERY_FLOWER_PASSWORD!!!
 {% endif %}
 
-if "{{ cookiecutter.use_docker }}".lower() == "y"
+{% if cookiecutter.use_docker == "y" %}
 USE_DOCKER=true
 {% else %}
 USE_DOCKER=false
