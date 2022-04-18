@@ -1,5 +1,10 @@
 # General
 # ------------------------------------------------------------------------------
+{% if cookiecutter.use_docker == "y" %}
+USE_DOCKER=true
+{% else %}
+USE_DOCKER=false
+{% endif %}
 # DJANGO_READ_DOT_ENV_FILE=True
 DJANGO_SETTINGS_MODULE={{cookiecutter.project_slug}}.settings.production
 DJANGO_SECRET_KEY=!!!SET DJANGO_SECRET_KEY!!!
@@ -50,10 +55,4 @@ CELERY_BROKER_URL="$REDIS_URL"
 # Flower
 CELERY_FLOWER_USER=!!!SET CELERY_FLOWER_USER!!!
 CELERY_FLOWER_PASSWORD=!!!SET CELERY_FLOWER_PASSWORD!!!
-{% endif %}
-
-{% if cookiecutter.use_docker == "y" %}
-USE_DOCKER=true
-{% else %}
-USE_DOCKER=false
 {% endif %}
