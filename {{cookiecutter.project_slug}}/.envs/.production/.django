@@ -51,3 +51,9 @@ CELERY_BROKER_URL="$REDIS_URL"
 CELERY_FLOWER_USER=!!!SET CELERY_FLOWER_USER!!!
 CELERY_FLOWER_PASSWORD=!!!SET CELERY_FLOWER_PASSWORD!!!
 {% endif %}
+
+if "{{ cookiecutter.use_docker }}".lower() == "y"
+USE_DOCKER=true
+{% else %}
+USE_DOCKER=false
+{% endif %}
