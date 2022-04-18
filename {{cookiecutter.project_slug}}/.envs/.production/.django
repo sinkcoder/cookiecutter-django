@@ -1,10 +1,10 @@
 # General
 # ------------------------------------------------------------------------------
-{% if cookiecutter.use_docker == "y" %}
+{%- if cookiecutter.use_docker == "y" %}
 USE_DOCKER=true
-{% else %}
+{%- else %}
 USE_DOCKER=false
-{% endif %}
+{%- endif %}
 # DJANGO_READ_DOT_ENV_FILE=True
 DJANGO_SETTINGS_MODULE={{cookiecutter.project_slug}}.settings.production
 DJANGO_SECRET_KEY=!!!SET DJANGO_SECRET_KEY!!!
